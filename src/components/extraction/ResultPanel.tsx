@@ -100,7 +100,7 @@ export default function ResultPanel({ result }: { result: ExtractionResult }) {
 
       <div className="text-sm text-muted-foreground mb-3">
   Started at: {fmtTime(result.metadata?.started_at)} - Completed at:{" "}
-  {fmtTime(result.metadata?.completed_at)} — Extraction time:{" "}
+  {fmtTime(result.metadata?.completed_at)} - Extraction time:{" "}
         {extractionTimeStr}
       </div>
 
