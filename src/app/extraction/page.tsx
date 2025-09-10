@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from "react";
 import ProviderSelect from "@/components/extraction/ProviderSelect";
 import OptionsForm from "@/components/extraction/OptionsForm";
-import ResultPanel, { ExtractionResult } from "@/components/extraction/ResultPanel";
+import ResultPanel from "@/components/extraction/ResultPanel";
+import MetricsPanel from "@/components/extraction/MetricsPanel";
+import { ExtractionResult } from "@/components/extraction/types";
 import Link from "next/link";
 
 type Provider = { name: string; label: string };
@@ -176,7 +178,8 @@ export default function ExtractionPage() {
                     {extractError && <div className="mb-4 p-4 bg-destructive/5 text-destructive rounded">{extractError}</div>}
 
                     {result && (
-                        <div className="p-6 bg-card rounded-lg">
+                        <div className="space-y-8">
+                            <MetricsPanel result={result} />
                             <ResultPanel result={result} />
                         </div>
                     )}
