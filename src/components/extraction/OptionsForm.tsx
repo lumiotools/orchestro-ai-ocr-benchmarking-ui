@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -12,6 +12,12 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
+type OptionDescriptor = {
+  type: string;
+  description?: string;
+  choices?: string[];
+};
+
 export default function OptionsForm({
   options,
   formState,
@@ -19,13 +25,13 @@ export default function OptionsForm({
   onStart,
   extracting,
 }: {
-  options: any;
-  formState: Record<string, any>;
-  setFormState: (s: Record<string, any>) => void;
+  options: Record<string, OptionDescriptor>;
+  formState: Record<string, string | number | boolean>;
+  setFormState: Dispatch<SetStateAction<Record<string, string | number | boolean>>>;
   onStart: () => Promise<void> | void;
   extracting: boolean;
 }) {
-  function renderField(key: string, desc: any) {
+  function renderField(key: string, desc: OptionDescriptor) {
     if (desc.type === "boolean") {
       return (
         <div className="flex items-center justify-between gap-4">
@@ -48,7 +54,7 @@ export default function OptionsForm({
         <div>
           <label className="block text-sm font-medium mb-2">{key}</label>
           <Select
-            value={formState[key] ?? ""}
+            value={String(formState[key] ?? "")}
             onValueChange={(v) => setFormState({ ...formState, [key]: v })}
           >
             <SelectTrigger className="w-full">
@@ -71,7 +77,7 @@ export default function OptionsForm({
       <div>
         <label className="block text-sm font-medium mb-2">{key}</label>
         <Input
-          value={formState[key] ?? ""}
+          value={String(formState[key] ?? "")}
           onChange={(e) =>
             setFormState({ ...formState, [key]: e.target.value })
           }
@@ -82,7 +88,9 @@ export default function OptionsForm({
 
   return (
     <div className="space-y-4">
-      {Object.entries(options).map(([key, desc]: any) => (
+      {(
+        Object.entries(options) as [string, OptionDescriptor][]
+      ).map(([key, desc]) => (
         <div key={key}>{renderField(key, desc)}</div>
       ))}
 

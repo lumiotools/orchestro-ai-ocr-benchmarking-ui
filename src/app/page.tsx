@@ -139,7 +139,7 @@ const HomePage = () => {
               <Badge className="mb-4">Beta</Badge>
 
               <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight mb-6">
-                Lumio AI's OCR Benchmarking Tool
+                Lumio AI&apos;s OCR Benchmarking Tool
               </h1>
 
               <p className="text-lg text-muted-foreground mb-8">
