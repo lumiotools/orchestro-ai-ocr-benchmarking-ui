@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProviderSelect from "@/components/extraction/ProviderSelect";
 import OptionsForm from "@/components/extraction/OptionsForm";
-import ResultPanel from "@/components/reports/ResultPanel";
-import MetricsPanel from "@/components/reports/MetricsPanel";
 import { ExtractionResult } from "@/components/extraction/types";
 import PageHeader from "@/components/common/PageHeader";
 import ReportsHeader from "@/components/nav/ReportsHeader";
@@ -155,8 +153,8 @@ export default function ExtractionPage() {
                                             });
                                             const data: unknown = await resp.json();
                                             // new API returns { success: true, report_id: "..." }
-                                            if (typeof data === "object" && data !== null && "success" in data && (data as any).success && "report_id" in (data as any)) {
-                                                const id = (data as any).report_id as string;
+                                            if (typeof data === "object" && data !== null && "success" in data && data.success && "report_id" in data) {
+                                                const id = data.report_id as string;
                                                 // navigate to reports page (client-side)
                                                 router.push(`/reports/${id}`);
                                                 return;

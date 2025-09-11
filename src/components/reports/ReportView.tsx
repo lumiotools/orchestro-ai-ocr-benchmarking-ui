@@ -40,7 +40,7 @@ export default function ReportView({ id }: { id: string }) {
   if (!report) return <div className="p-6 bg-muted rounded">No report found.</div>;
 
   // The API returns report with inputs, metadata, markdown at top level
-  const fakeExtractionResult = {
+  const parsedExtractionResult = {
     success: true,
     metadata: report.metadata,
     data: { markdown: report.markdown ?? "" },
@@ -51,7 +51,7 @@ export default function ReportView({ id }: { id: string }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Inputs column (left) */}
-      <div className="lg:col-span-1 p-6 bg-card rounded-lg">
+      <div className="lg:col-span-1 p-6 bg-card rounded-lg border">
         <h3 className="font-semibold mb-3">Inputs</h3>
         <div className="text-sm space-y-2">
           {Object.keys(inputs).length ? (
@@ -71,12 +71,12 @@ export default function ReportView({ id }: { id: string }) {
 
       {/* Metrics column (right) */}
       <div className="lg:col-span-2">
-        <MetricsPanel result={fakeExtractionResult as any} />
+        <MetricsPanel result={parsedExtractionResult} />
       </div>
 
       {/* Extraction result full width below */}
       <div className="lg:col-span-3">
-        <ResultPanel result={fakeExtractionResult as any} />
+        <ResultPanel result={parsedExtractionResult} />
       </div>
     </div>
   );

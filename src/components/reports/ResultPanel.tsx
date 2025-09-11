@@ -28,7 +28,7 @@ export default function ResultPanel({ result }: { result: ExtractionResult }) {
   };
 
   return (
-    <div className="p-6 bg-background rounded-lg border">
+    <div className="p-6 bg-card rounded-lg border">
       <div className="flex items-center justify-between mb-4">
         <h4 className="font-semibold">Extraction Result</h4>
         <div className="flex items-center gap-3">
@@ -45,7 +45,7 @@ export default function ResultPanel({ result }: { result: ExtractionResult }) {
         {raw ? (
           <pre className="whitespace-pre-wrap text-sm leading-relaxed">{markdown}</pre>
         ) : (
-          <div className="prose max-w-none">
+          <div className="prose dark:prose-invert max-w-none">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeRaw, rehypeSanitize]}

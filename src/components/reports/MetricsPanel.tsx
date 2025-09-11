@@ -78,7 +78,7 @@ export default function MetricsPanel({ result }: { result: ExtractionResult }) {
   const detailed = score?.detailed_metrics;
 
   return (
-    <div className="p-6 bg-background rounded-lg border">
+    <div className="p-6 bg-card rounded-lg border">
       <h4 className="font-semibold mb-2">Metrics</h4>
       <div className="text-sm text-muted-foreground mb-4 flex flex-wrap gap-4">
         <div>
