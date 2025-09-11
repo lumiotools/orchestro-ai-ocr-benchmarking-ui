@@ -97,7 +97,7 @@ export default function ExtractionPage() {
                     Object.entries(opts).forEach(([key, val]) => {
                         const spec = val as OptionSpec;
                         if (spec.type === "boolean") init[key] = !!spec.default;
-                        else if (spec.type === "select") init[key] = spec.choices?.[0] ?? (spec.default ?? "");
+                        else if (spec.type === "select") init[key] = spec.default ?? (spec.choices?.[0] ?? "test");
                         else if (spec.type === "number") init[key] = (typeof spec.default === "number" ? spec.default : 0);
                         else init[key] = spec.default ?? "";
                     });
