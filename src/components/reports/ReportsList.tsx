@@ -49,6 +49,8 @@ export default function ReportsList() {
           <TableHeader>
             <TableRow>
               <TableHead>Report ID</TableHead>
+              <TableHead>Provider</TableHead>
+              <TableHead>Pdf File</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
@@ -57,6 +59,8 @@ export default function ReportsList() {
             {reports.map((r) => (
               <TableRow key={r.id}>
                 <TableCell className="break-all">{r.id}</TableCell>
+                <TableCell className="break-all">{String((r.inputs as Record<string, any>)?.provider ?? "")}</TableCell>
+                <TableCell className="break-all">{String((r.inputs as Record<string, any>)?.pdf_file ?? "")}</TableCell>
                 <TableCell>
                   {r.created_at ? (
                     <div>
