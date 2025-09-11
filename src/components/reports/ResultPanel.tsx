@@ -7,7 +7,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { ExtractionResult } from "./types";
+import { ExtractionResult } from "@/components/extraction/types";
 
 export default function ResultPanel({ result }: { result: ExtractionResult }) {
   const [raw, setRaw] = useState(false);
@@ -41,12 +41,22 @@ export default function ResultPanel({ result }: { result: ExtractionResult }) {
           </Button>
         </div>
       </div>
-      <div className="max-w-none bg-muted p-4 rounded-md">
+      <div className="max-w-none bg-muted py-4 px-8 rounded-md">
         {raw ? (
           <pre className="whitespace-pre-wrap text-sm leading-relaxed">{markdown}</pre>
         ) : (
           <div className="prose max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSanitize]}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw, rehypeSanitize]}
+              components={{
+                table: ({ node, ...props }) => (
+                  <div className="overflow-x-auto">
+                    <table {...props} />
+                  </div>
+                ),
+              }}
+            >
               {markdown}
             </ReactMarkdown>
           </div>

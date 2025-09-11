@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import ProviderSelect from "@/components/extraction/ProviderSelect";
 import OptionsForm from "@/components/extraction/OptionsForm";
-import ResultPanel from "@/components/extraction/ResultPanel";
-import MetricsPanel from "@/components/extraction/MetricsPanel";
+import ResultPanel from "@/components/reports/ResultPanel";
+import MetricsPanel from "@/components/reports/MetricsPanel";
 import { ExtractionResult } from "@/components/extraction/types";
-import Link from "next/link";
+import PageHeader from "@/components/common/PageHeader";
+import ReportsHeader from "@/components/nav/ReportsHeader";
 
 type Provider = { name: string; label: string };
 
@@ -28,6 +30,7 @@ type OptionsResponse = {
 };
 
 export default function ExtractionPage() {
+    const router = useRouter();
     const [providers, setProviders] = useState<Provider[]>([]);
     const [loadingProviders, setLoadingProviders] = useState(false);
     const [selected, setSelected] = useState<string | undefined>(undefined);
@@ -116,15 +119,11 @@ export default function ExtractionPage() {
     return (
         <div className="min-h-screen bg-muted py-12">
             <div className="container mx-auto px-6">
-                <div className="flex items-center justify-between mb-8">
-                    <div>
-                        <h2 className="text-2xl font-bold">Extraction</h2>
-                        <p className="text-sm text-muted-foreground">Choose a provider and configure inputs to start an extraction.</p>
-                    </div>
-                    <div>
-                        <Link href="/">Back home</Link>
-                    </div>
-                </div>
+                <PageHeader
+                    title="Extraction"
+                    subtitle="Choose a provider and configure inputs to start an extraction."
+                    actions={<ReportsHeader />}
+                />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1 p-6 bg-card rounded-lg">
@@ -144,45 +143,38 @@ export default function ExtractionPage() {
                                 setFormState={setFormState}
                                 extracting={extracting}
                                 onStart={async () => {
-                                    if (!selected) return;
-                                    setExtractError(null);
-                                    setResult(null);
-                                    setExtracting(true);
-                                    try {
-                                        const resp = await fetch(`${apiBase}/api/providers/${selected}/extract`, {
-                                            method: "POST",
-                                            headers: { "Content-Type": "application/json" },
-                                            body: JSON.stringify(formState),
-                                        });
-                                        const data: unknown = await resp.json();
-                                        if (typeof data === "object" && data !== null && "success" in data && (data as ExtractionResult).success) {
-                                            setResult(data as ExtractionResult);
-                                        } else {
-                                            setExtractError("Extraction failed: unexpected response");
+                                        if (!selected) return;
+                                        setExtractError(null);
+                                        setResult(null);
+                                        setExtracting(true);
+                                        try {
+                                            const resp = await fetch(`${apiBase}/api/providers/${selected}/extract`, {
+                                                method: "POST",
+                                                headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify(formState),
+                                            });
+                                            const data: unknown = await resp.json();
+                                            // new API returns { success: true, report_id: "..." }
+                                            if (typeof data === "object" && data !== null && "success" in data && (data as any).success && "report_id" in (data as any)) {
+                                                const id = (data as any).report_id as string;
+                                                // navigate to reports page (client-side)
+                                                router.push(`/reports/${id}`);
+                                                return;
+                                            } else {
+                                                setExtractError("Extraction failed: unexpected response");
+                                            }
+                                        } catch (err: unknown) {
+                                            const message = err instanceof Error ? err.message : String(err);
+                                            setExtractError(message || "Network error");
+                                        } finally {
+                                            setExtracting(false);
                                         }
-                                    } catch (err: unknown) {
-                                        const message = err instanceof Error ? err.message : String(err);
-                                        setExtractError(message || "Network error");
-                                    } finally {
-                                        setExtracting(false);
-                                    }
-                                }}
+                                    }}
                             />
                         ) : (
                             <div className="text-sm text-muted-foreground">Select a provider to load inputs.</div>
                         )}
                     </div>
-                </div>
-
-                <div className="mt-8">
-                    {extractError && <div className="mb-4 p-4 bg-destructive/5 text-destructive rounded">{extractError}</div>}
-
-                    {result && (
-                        <div className="space-y-8">
-                            <MetricsPanel result={result} />
-                            <ResultPanel result={result} />
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

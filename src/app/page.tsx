@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import ReportsHeader from "@/components/nav/ReportsHeader";
 
 const HeroIllustration = () => (
   <svg
@@ -119,10 +120,8 @@ const HomePage = () => {
               OCR Benchmarking
             </span>
           </div>
-          <nav>
-            <Link href="/extraction" className="text-sm hover:underline">
-              Try it out
-            </Link>
+          <nav className="flex items-center gap-4">
+            <ReportsHeader />
           </nav>
         </div>
       </header>

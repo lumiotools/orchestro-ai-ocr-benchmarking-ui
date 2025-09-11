@@ -24,3 +24,17 @@ export interface ExtractionResult {
     markdown: string;
   };
 }
+
+export interface Report {
+  id: string;
+  created_at?: string;
+  inputs?: Record<string, unknown> | { provider?: string };
+  metadata?: ExtractionResult["metadata"];
+  markdown?: string;
+}
+
+export interface ReportResponse {
+  success: boolean;
+  data?: { report?: Report; reports?: Report[] };
+}
+

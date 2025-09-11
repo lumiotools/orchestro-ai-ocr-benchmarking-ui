@@ -11,7 +11,7 @@ import {
   Tooltip as RechartsTooltip,
   CartesianGrid,
 } from "recharts";
-import { ExtractionResult } from "./types";
+import { ExtractionResult } from "@/components/extraction/types";
 
 function fmtTime(value: unknown) {
   if (value == null) return "-";
