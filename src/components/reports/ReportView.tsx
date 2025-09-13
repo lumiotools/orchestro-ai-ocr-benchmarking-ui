@@ -59,7 +59,7 @@ export default function ReportView({ id }: { id: string }) {
               {Object.entries(inputs).map(([k, v]) => (
                 <div key={k} className="flex flex-col">
                   <dt className="text-xs text-muted-foreground font-medium">{k}</dt>
-                  <dd className="text-sm">{typeof v === 'string' || typeof v === 'number' ? String(v) : JSON.stringify(v)}</dd>
+                  <dd className="text-sm break-all">{typeof v === 'string' || typeof v === 'number' ? String(v) : JSON.stringify(v)}</dd>
                 </div>
               ))}
             </dl>

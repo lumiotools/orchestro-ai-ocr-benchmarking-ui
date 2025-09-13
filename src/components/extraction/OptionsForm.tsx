@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "../ui/textarea";
 
 type OptionDescriptor = {
   type: string;
@@ -27,7 +28,9 @@ export default function OptionsForm({
 }: {
   options: Record<string, OptionDescriptor>;
   formState: Record<string, string | number | boolean>;
-  setFormState: Dispatch<SetStateAction<Record<string, string | number | boolean>>>;
+  setFormState: Dispatch<
+    SetStateAction<Record<string, string | number | boolean>>
+  >;
   onStart: () => Promise<void> | void;
   extracting: boolean;
 }) {
@@ -73,6 +76,20 @@ export default function OptionsForm({
       );
     }
 
+    if (desc.type === "long_string") {
+      return (
+        <div>
+          <label className="block text-sm font-medium mb-2">{key}</label>
+          <Textarea
+            value={String(formState[key] ?? "")}
+            onChange={(e) =>
+              setFormState({ ...formState, [key]: e.target.value })
+            }
+          />
+        </div>
+      );
+    }
+
     return (
       <div>
         <label className="block text-sm font-medium mb-2">{key}</label>
@@ -88,11 +105,11 @@ export default function OptionsForm({
 
   return (
     <div className="space-y-4">
-      {(
-        Object.entries(options) as [string, OptionDescriptor][]
-      ).map(([key, desc]) => (
-        <div key={key}>{renderField(key, desc)}</div>
-      ))}
+      {(Object.entries(options) as [string, OptionDescriptor][]).map(
+        ([key, desc]) => (
+          <div key={key}>{renderField(key, desc)}</div>
+        )
+      )}
 
       <div className="mt-4 flex items-center gap-3">
         <Button disabled={extracting} onClick={onStart}>
