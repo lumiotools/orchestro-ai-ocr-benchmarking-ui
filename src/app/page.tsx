@@ -115,10 +115,7 @@ const HomePage = () => {
       <header className="border-b bg-transparent">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="font-bold">Lumio AI</div>
-            <span className="text-sm text-muted-foreground">
-              OCR Benchmarking
-            </span>
+            <div className="font-bold">OCR Benchmarking</div>
           </div>
           <nav className="flex items-center gap-4">
             <ReportsHeader />
@@ -138,7 +135,7 @@ const HomePage = () => {
               <Badge className="mb-4">Beta</Badge>
 
               <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight mb-6">
-                Lumio AI&apos;s OCR Benchmarking Tool
+                OCR Benchmarking Tool
               </h1>
 
               <p className="text-lg text-muted-foreground mb-8">
