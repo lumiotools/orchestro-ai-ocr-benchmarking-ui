@@ -132,8 +132,6 @@ const HomePage = () => {
 
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="max-w-2xl">
-              <Badge className="mb-4">Beta</Badge>
-
               <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight mb-6">
                 OCR Benchmarking Tool
               </h1>
