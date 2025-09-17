@@ -11,7 +11,7 @@ import ReportsHeader from "@/components/nav/ReportsHeader";
 type Provider = { name: string; label: string };
 
 type OptionSpec = {
-    type: "boolean" | "select" | "string" | "number";
+    type: "boolean" | "select" | "string" | "number" | "tab";
     default?: boolean | string | number;
     choices?: string[];
     label?: string;
@@ -98,6 +98,7 @@ export default function ExtractionPage() {
                         const spec = val as OptionSpec;
                         if (spec.type === "boolean") init[key] = !!spec.default;
                         else if (spec.type === "select") init[key] = spec.default ?? (spec.choices?.[0] ?? "");
+                        else if (spec.type === "tab") init[key] = spec.default ?? (spec.choices?.[0] ?? "");
                         else if (spec.type === "number") init[key] = (typeof spec.default === "number" ? spec.default : 0);
                         else init[key] = spec.default ?? "";
                     });
