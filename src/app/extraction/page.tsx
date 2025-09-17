@@ -35,7 +35,7 @@ export default function ExtractionPage() {
 
     const [options, setOptions] = useState<Record<string, OptionSpec> | null>(null);
     const [loadingOptions, setLoadingOptions] = useState(false);
-    const [formState, setFormState] = useState<Record<string, string | number | boolean>>({});
+    const [formState, setFormState] = useState<Record<string, string | number | boolean | File | null>>({});
     const [extracting, setExtracting] = useState(false);
     const [result, setResult] = useState<ExtractionResult | null>(null);
     const [extractError, setExtractError] = useState<string | null>(null);
@@ -97,7 +97,7 @@ export default function ExtractionPage() {
                     Object.entries(opts).forEach(([key, val]) => {
                         const spec = val as OptionSpec;
                         if (spec.type === "boolean") init[key] = !!spec.default;
-                        else if (spec.type === "select") init[key] = spec.default ?? (spec.choices?.[0] ?? "test");
+                        else if (spec.type === "select") init[key] = spec.default ?? (spec.choices?.[0] ?? "");
                         else if (spec.type === "number") init[key] = (typeof spec.default === "number" ? spec.default : 0);
                         else init[key] = spec.default ?? "";
                     });
@@ -146,10 +146,18 @@ export default function ExtractionPage() {
                                         setResult(null);
                                         setExtracting(true);
                                         try {
+                                            // Build FormData from formState
+                                            const formData = new FormData();
+                                            Object.entries(formState).forEach(([key, value]) => {
+                                                if (value instanceof File) {
+                                                    if (value) formData.append(key, value);
+                                                } else if (typeof value !== "undefined" && value !== null) {
+                                                    formData.append(key, String(value));
+                                                }
+                                            });
                                             const resp = await fetch(`${apiBase}/api/providers/${selected}/extract`, {
                                                 method: "POST",
-                                                headers: { "Content-Type": "application/json" },
-                                                body: JSON.stringify(formState),
+                                                body: formData,
                                             });
                                             const data: unknown = await resp.json();
                                             // new API returns { success: true, report_id: "..." }

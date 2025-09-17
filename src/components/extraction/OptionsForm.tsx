@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -12,11 +12,13 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "../ui/textarea";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 type OptionDescriptor = {
   type: string;
   description?: string;
   choices?: string[];
+  content?: Record<string, Record<string, OptionDescriptor>>;
 };
 
 export default function OptionsForm({
@@ -27,15 +29,51 @@ export default function OptionsForm({
   extracting,
 }: {
   options: Record<string, OptionDescriptor>;
-  formState: Record<string, string | number | boolean>;
+  formState: Record<string, string | number | boolean | File | null>;
   setFormState: Dispatch<
-    SetStateAction<Record<string, string | number | boolean>>
+    SetStateAction<Record<string, string | number | boolean | File | null>>
   >;
   onStart: () => Promise<void> | void;
   extracting: boolean;
 }) {
   function renderField(key: string, desc: OptionDescriptor) {
-    if (desc.type === "boolean") {
+    // TAB type support
+    if (desc.type === "tab" && desc.choices && desc.content) {
+      // Track selected tab in local state
+      const selectedTab = (formState[key] as string) || desc.choices[0];
+
+      // Handler for tab change
+      const handleTabChange = (tab: string) => {
+        setFormState({ ...formState, [key]: tab });
+      };
+
+      return (
+        <div>
+          <label className="block text-sm font-medium mb-2">{key}</label>
+          <Tabs value={selectedTab} onValueChange={handleTabChange} className="w-full">
+            <TabsList className="w-full">
+              {desc.choices.map((choice) => (
+                <TabsTrigger key={choice} value={choice}>
+                  {choice}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {desc.choices.map((choice) => (
+              <TabsContent key={choice} value={choice} className="pt-2">
+                {/* Render nested fields for this tab */}
+                {desc.content && desc.content[choice] &&
+                  Object.entries(desc.content[choice]).map(([nestedKey, nestedDesc]) => (
+                    <div key={nestedKey}>
+                      {renderField(nestedKey, nestedDesc)}
+                    </div>
+                  ))}
+              </TabsContent>
+            ))}
+          </Tabs>
+        </div>
+      );
+    }
+  if (desc.type === "boolean") {
       return (
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -52,7 +90,7 @@ export default function OptionsForm({
       );
     }
 
-    if (desc.type === "select") {
+  if (desc.type === "select") {
       return (
         <div>
           <label className="block text-sm font-medium mb-2">{key}</label>
@@ -76,7 +114,7 @@ export default function OptionsForm({
       );
     }
 
-    if (desc.type === "long_string") {
+  if (desc.type === "long_string") {
       return (
         <div>
           <label className="block text-sm font-medium mb-2">{key}</label>
@@ -90,6 +128,29 @@ export default function OptionsForm({
       );
     }
 
+  if (desc.type === "file") {
+      return (
+        <div>
+          <label className="block text-sm font-medium mb-2">{key}</label>
+          <div className="flex items-center gap-3">
+            <Input
+              type="file"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setFormState({
+                  ...formState,
+                  [key]:
+                    e.target.files && e.target.files.length > 0
+                      ? e.target.files[0]
+                      : null,
+                })
+              }
+            />
+          </div>
+        </div>
+      );
+    }
+
+    // Default: string/number
     return (
       <div>
         <label className="block text-sm font-medium mb-2">{key}</label>
